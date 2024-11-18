@@ -3,7 +3,10 @@ local Queue = require("queue")
 local max_width = 30
 local max_height = 20
 local cell_size = 30
-local snake_size = cell_size * 0.8
+local snake_scale = 0.8
+local snake_size = cell_size * snake_scale
+local middle = (snake_scale + 1) / 2
+
 
 local screen_width = cell_size * max_width
 local screen_height = cell_size * max_height
@@ -128,7 +131,6 @@ function love.update(dt)
     if head_new.y <= start_cell_y or head_new.x <= start_cell_x
     or head_new.y >= end_cell_y+1 or head_new.x >= end_cell_x+1
     or grid[head_new.y][head_new.x] == 1 then
-        grid[head_new.y][head_new.x] = 3
         game_over = true
     end
 
@@ -172,13 +174,13 @@ function love.draw()
         for j = 1, max_width do
             if grid[i][j] == 1 then
                 love.graphics.setColor(0, 1, 0)
-                love.graphics.rectangle("fill", (j-0.9)*cell_size, (i-0.9)*cell_size, snake_size, snake_size)
+                love.graphics.rectangle("fill", (j-middle)*cell_size, (i-middle)*cell_size, snake_size, snake_size)
             elseif grid[i][j] == 2 then
                 love.graphics.setColor(1, 0, 0)
-                love.graphics.rectangle("fill", (j-0.9)*cell_size, (i-0.9)*cell_size, snake_size, snake_size)
+                love.graphics.rectangle("fill", (j-middle)*cell_size, (i-middle)*cell_size, snake_size, snake_size)
             elseif grid[i][j] == 3 then
                 love.graphics.setColor(1, 1, 1)
-                love.graphics.rectangle("fill", (j-0.9)*cell_size, (i-0.9)*cell_size, snake_size, snake_size)
+                love.graphics.rectangle("fill", (j-middle)*cell_size, (i-middle)*cell_size, snake_size, snake_size)
             end
         end
     end
