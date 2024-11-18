@@ -1,12 +1,12 @@
-# Scuffed Snake Game
-
-![scuffed snake](screenshot.png)
+# scuffed-snake
 
 A really bad implementation of snake in Lua
 
+![scuffed snake](screenshot.png)
+
 ## Quick Start
 
-Install the [LOVE](https://love2d.org/) game framework.
+Install the [LÖVE](https://love2d.org/) game framework.
 
 Then go to the project root, and run
 
