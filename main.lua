@@ -27,7 +27,7 @@ local directions = {
 local direction = directions.right
 local inputs = Queue.new()
 
-local tick_rate = 0.15
+local tick_rate = 0.1
 local update_timer = tick_rate
 
 local score = 0
