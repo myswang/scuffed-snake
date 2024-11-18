@@ -92,7 +92,9 @@ function love.load()
 end
 
 function love.keypressed(key)
-    if key == "return" then
+    if key == "escape" then
+        love.event.quit()
+    elseif key == "return" then
         restart_game()
     elseif key == "w" or key == "up" then
         Queue.pushBack(inputs, directions.up)

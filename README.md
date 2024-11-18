@@ -19,4 +19,5 @@ to start the game.
 ## Controls
 
  - W/A/S/D or arrow keys: Move the snake
- - ENTER: Restart the game
+ - Enter: Restart the game
+ - Escape: Quit the game
