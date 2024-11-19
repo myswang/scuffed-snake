@@ -14,6 +14,8 @@ local start_cell_x = 1
 local start_cell_y = 2
 local end_cell_x = max_width - 1
 local end_cell_y = max_height - 1
+local mid_y = math.floor((end_cell_y + start_cell_y) / 2)
+local mid_x = math.floor((end_cell_x + start_cell_x) / 2)
 
 local font_size = cell_size
 
@@ -58,6 +60,7 @@ local function restart_game()
     game_over = false
     game_running = false
     direction = directions.right
+    update_timer = tick_rate
 
     -- generate game grid
     for i = 1, max_height do
@@ -71,22 +74,17 @@ local function restart_game()
         end
     end
 
-    -- create starting snake
-    local midpoint = math.floor((end_cell_y + start_cell_y) / 2)
-    grid[midpoint][5] = 1
-    grid[midpoint][4] = 1
-    grid[midpoint][3] = 1
-
     Queue.clear(snake)
-    Queue.pushBack(snake, {y=midpoint, x=5})
-    Queue.pushBack(snake, {y=midpoint, x=4})
-    Queue.pushBack(snake, {y=midpoint, x=3})
-
     Queue.clear(inputs)
-    update_timer = tick_rate
+
+    -- create starting snake
+    for i = 4, 2, -1 do
+        grid[mid_y][start_cell_x+i] = 1
+        Queue.pushBack(snake, {y=mid_y, x=start_cell_x+i})
+    end
 
     -- create an apple for testing purposes
-    grid[midpoint][10] = 2
+    grid[mid_y][mid_x] = 2
 end
 
 function love.load()
