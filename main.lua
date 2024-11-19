@@ -35,6 +35,7 @@ local update_timer = tick_rate
 
 local score = 0
 local game_over = false
+local game_running = false
 
 local function spawn_apple()
     local empty_spots = {}
@@ -55,6 +56,7 @@ local function restart_game()
     math.randomseed(os.time() + os.clock() * 1000000)
     score = 0
     game_over = false
+    game_running = false
     direction = directions.right
 
     -- generate game grid
@@ -70,14 +72,14 @@ local function restart_game()
     end
 
     -- create starting snake
-    grid[5][5] = 1
-    grid[5][4] = 1
-    grid[5][3] = 1
+    grid[4][5] = 1
+    grid[4][4] = 1
+    grid[4][3] = 1
 
     Queue.clear(snake)
-    Queue.pushBack(snake, {y=5, x=5})
-    Queue.pushBack(snake, {y=5, x=4})
-    Queue.pushBack(snake, {y=5, x=3})
+    Queue.pushBack(snake, {y=4, x=5})
+    Queue.pushBack(snake, {y=4, x=4})
+    Queue.pushBack(snake, {y=4, x=3})
 
     Queue.clear(inputs)
     update_timer = tick_rate
@@ -95,6 +97,8 @@ function love.load()
 end
 
 function love.keypressed(key)
+    if not game_running then game_running = true end
+
     if key == "escape" then
         love.event.quit()
     elseif key == "return" then
@@ -111,16 +115,19 @@ function love.keypressed(key)
 end
 
 function love.update(dt)
+    -- control snake update speed
     update_timer = update_timer - dt
-    if update_timer > 0 or game_over then
+    if update_timer > 0 or game_over or not game_running then
         return
     end
     update_timer = tick_rate
+
     -- change snake direction
-    if not Queue.isEmpty(inputs) then
+    while not Queue.isEmpty(inputs) do
         local temp = Queue.popFront(inputs)
-        if temp.y + direction.y ~= 0 or temp.x + direction.x ~= 0 then
+        if temp ~= direction and (temp.y + direction.y ~= 0 or temp.x + direction.x ~= 0) then
             direction = temp
+            break
         end
     end
 
@@ -134,6 +141,7 @@ function love.update(dt)
         game_over = true
     end
 
+    -- grow snake if it collides with an apple
     if grid[head_new.y][head_new.x] == 2 then
         spawn_apple()
         score = score + 1
@@ -142,6 +150,7 @@ function love.update(dt)
         grid[tail.y][tail.x] = 0
     end
 
+    -- change color of snake head on death
     if game_over then
         grid[head_new.y][head_new.x] = 3
     else
@@ -155,9 +164,9 @@ function love.draw()
     -- draw world boundaries
     love.graphics.setColor(0.1, 0.1, 0.1)
     love.graphics.rectangle(
-        "fill", 
-        start_cell_x*cell_size, 
-        start_cell_y*cell_size, 
+        "fill",
+        start_cell_x*cell_size,
+        start_cell_y*cell_size,
         cell_size*(end_cell_x-start_cell_x),
         cell_size*(end_cell_y-start_cell_y)
     )
@@ -165,7 +174,13 @@ function love.draw()
     -- draw scoreboard
     local font = love.graphics.getFont()
     local text = love.graphics.newText(font)
-    text:add({{1, 1, 1}, "Score: " .. score}, 0, 0)
+    if game_over then
+        text:add({{1, 0, 0}, "Game Over! Score: "..score}, 0, 0)
+    elseif not game_running then
+        text:add({{1, 1, 1}, "Press any key to start!"}, 0, 0)
+    else
+        text:add({{1, 1, 1}, "Score: "..score}, 0, 0)
+    end
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(text, 0, 0)
 
