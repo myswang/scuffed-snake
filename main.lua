@@ -39,6 +39,18 @@ local score = 0
 local game_over = false
 local game_running = false
 
+local function handle_movement_key(key)
+    if key == "w" or key == "up" then
+        Queue.pushBack(inputs, directions.up)
+    elseif key == "s" or key == "down" then
+        Queue.pushBack(inputs, directions.down)
+    elseif key == "a" or key == "left" then
+        Queue.pushBack(inputs, directions.left)
+    elseif key == "d" or key == "right" then
+        Queue.pushBack(inputs, directions.right)
+    end
+end
+
 local function spawn_apple()
     local empty_spots = {}
     -- get a list of all empty slots
@@ -102,14 +114,8 @@ function love.keypressed(key)
         love.event.quit()
     elseif key == "return" then
         restart_game()
-    elseif key == "w" or key == "up" then
-        Queue.pushBack(inputs, directions.up)
-    elseif key == "s" or key == "down" then
-        Queue.pushBack(inputs, directions.down)
-    elseif key == "a" or key == "left" then
-        Queue.pushBack(inputs, directions.left)
-    elseif key == "d" or key == "right" then
-        Queue.pushBack(inputs, directions.right)
+    elseif Queue.length(inputs) <= 1 then
+        handle_movement_key(key)
     end
 end
 
