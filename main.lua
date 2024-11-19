@@ -72,20 +72,21 @@ local function restart_game()
     end
 
     -- create starting snake
-    grid[4][5] = 1
-    grid[4][4] = 1
-    grid[4][3] = 1
+    local midpoint = math.floor((end_cell_y + start_cell_y) / 2)
+    grid[midpoint][5] = 1
+    grid[midpoint][4] = 1
+    grid[midpoint][3] = 1
 
     Queue.clear(snake)
-    Queue.pushBack(snake, {y=4, x=5})
-    Queue.pushBack(snake, {y=4, x=4})
-    Queue.pushBack(snake, {y=4, x=3})
+    Queue.pushBack(snake, {y=midpoint, x=5})
+    Queue.pushBack(snake, {y=midpoint, x=4})
+    Queue.pushBack(snake, {y=midpoint, x=3})
 
     Queue.clear(inputs)
     update_timer = tick_rate
 
     -- create an apple for testing purposes
-    spawn_apple()
+    grid[midpoint][10] = 2
 end
 
 function love.load()
